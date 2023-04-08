@@ -5096,7 +5096,6 @@ Emerson,Emerson,NJ,New Jersey,34003,Bergen,40.9748,-74.024,7317,1316.4,shape,FAL
 Yorketown,Yorketown,NJ,New Jersey,34025,Monmouth,40.3064,-74.3385,7316,1089.7,shape,FALSE,FALSE,America/New_York,3,7726,1840033488
 Pukalani,Pukalani,HI,Hawaii,15009,Maui,20.8329,-156.3415,7315,786.8,shape,FALSE,FALSE,Pacific/Honolulu,3,96768 96788,1840029545
 Flatwoods,Flatwoods,KY,Kentucky,21089,Greenup,38.521,-82.7196,7314,846,shape,FALSE,TRUE,America/New_York,3,41139,1840013182
-San Antonio,San Antonio,PR,Puerto Rico,72051,Dorado,18.4471,-66.2995,7311,1633.5,shape,FALSE,FALSE,America/Puerto_Rico,3,646,1630023733
 Enoch,Enoch,UT,Utah,49021,Iron,37.7669,-113.0449,7307,345.1,shape,FALSE,TRUE,America/Denver,3,84721,1840020273
 Piedmont,Piedmont,OK,Oklahoma,40017,Canadian,35.6781,-97.7526,7306,72.6,shape,FALSE,TRUE,America/Chicago,3,73078,1840020422
 Bennettsville,Bennettsville,SC,South Carolina,45069,Marlboro,34.6303,-79.6875,7306,494.9,shape,FALSE,TRUE,America/New_York,3,29512,1840013583
@@ -11034,7 +11033,6 @@ Stony Point,Stony Point,MI,Michigan,26115,Monroe,41.9451,-83.2751,2005,516.5,sha
 Benson,Benson,UT,Utah,49005,Cache,41.7492,-111.9173,2005,23,shape,FALSE,FALSE,America/Denver,3,84321 84335 84339,1840017476
 Maurice,Maurice,LA,Louisiana,22113,Vermilion,30.1042,-92.1211,2004,303.1,shape,FALSE,TRUE,America/Chicago,3,70555,1840018255
 Calico Rock,Calico Rock,AR,Arkansas,5065,Izard,36.1401,-92.1341,2001,189.8,shape,FALSE,TRUE,America/Chicago,3,72519,1840013352
-San Antonio,San Antonio,PR,Puerto Rico,72115,Quebradillas,18.4391,-66.9321,2001,550.7,shape,FALSE,FALSE,America/Puerto_Rico,3,678,1630146624
 Trowbridge Park,Trowbridge Park,MI,Michigan,26103,Marquette,46.5565,-87.4417,2000,610,shape,FALSE,FALSE,America/Detroit,3,49855,1840006571
 Wacousta,Wacousta,MI,Michigan,26037,Clinton,42.8202,-84.6907,2000,73.5,shape,FALSE,FALSE,America/Detroit,3,48837 48822 48820,1840024060
 Smackover,Smackover,AR,Arkansas,5139,Union,33.3636,-92.7314,2000,156.1,shape,FALSE,TRUE,America/Chicago,3,71762,1840015732
@@ -11220,7 +11218,6 @@ Coupeville,Coupeville,WA,Washington,53029,Island,48.2172,-122.6775,1937,562.6,sh
 San Pasqual,San Pasqual,CA,California,6037,Los Angeles,34.1393,-118.1027,1937,2745.2,shape,FALSE,TRUE,America/Los_Angeles,2,91107,1840028271
 Andrews,Andrews,NC,North Carolina,37039,Cherokee,35.1994,-83.8262,1937,429.6,shape,FALSE,TRUE,America/New_York,3,28901,1840015474
 Wanchese,Wanchese,NC,North Carolina,37055,Dare,35.8399,-75.6383,1936,173.1,shape,FALSE,FALSE,America/New_York,3,27981,1840013370
-San Antonio,San Antonio,PR,Puerto Rico,72005,Aguadilla,18.4932,-67.0997,1936,1452.8,shape,FALSE,FALSE,America/Puerto_Rico,3,690,1630149533
 Kentland,Kentland,IN,Indiana,18111,Newton,40.774,-87.4465,1935,517.5,shape,FALSE,TRUE,America/Chicago,3,47951,1840010306
 Fort Valley,Fort Valley,AZ,Arizona,4005,Coconino,35.3228,-111.7399,1935,11.2,shape,FALSE,TRUE,America/Phoenix,4,86001,1840075372
 Jasonville,Jasonville,IN,Indiana,18055,Greene,39.1622,-87.1998,1935,574,shape,FALSE,TRUE,America/Indiana/Indianapolis,3,47438,1840008551
@@ -13862,7 +13859,6 @@ Verona,Verona,KY,Kentucky,21015,Boone,38.8122,-84.6649,1236,38.5,shape,FALSE,FAL
 Wartburg,Wartburg,TN,Tennessee,47129,Morgan,36.1038,-84.5859,1235,456,shape,FALSE,TRUE,America/New_York,3,37887,1840015313
 Ardmore,Ardmore,TN,Tennessee,47055,Giles,35.0031,-86.8548,1235,103.6,shape,FALSE,TRUE,America/Chicago,3,38449,1840013453
 Beaverton,Beaverton,MI,Michigan,26051,Gladwin,43.8809,-84.4883,1235,467.1,shape,FALSE,TRUE,America/Detroit,3,48612,1840002563
-San Antonio,San Antonio,FL,Florida,12101,Pasco,28.3395,-82.2786,1235,332.4,shape,FALSE,TRUE,America/New_York,3,33576,1840015969
 Cordry Sweetwater Lakes,Cordry Sweetwater Lakes,IN,Indiana,18013,Brown,39.3085,-86.1227,1235,191.6,shape,FALSE,FALSE,America/Indiana/Indianapolis,3,46164,1840030086
 Tatum,Tatum,TX,Texas,48401,Rusk,32.3159,-94.5189,1234,133.3,shape,FALSE,TRUE,America/Chicago,3,75691,1840022107
 Factoryville,Factoryville,PA,Pennsylvania,42131,Wyoming,41.5602,-75.7823,1234,703,shape,FALSE,TRUE,America/New_York,3,18419,1840000576
@@ -29926,7 +29922,6 @@ Huntsdale,Huntsdale,MO,Missouri,29019,Boone,38.912,-92.4787,16,12.8,shape,FALSE,
 Redwood,Redwood,MS,Mississippi,28149,Warren,32.4734,-90.7969,16,14,shape,FALSE,FALSE,America/Chicago,3,39156,1840032410
 Valley Park,Valley Park,OK,Oklahoma,40131,Rogers,36.2828,-95.7362,16,3,shape,FALSE,TRUE,America/Chicago,3,74019,1840034621
 McMullen,McMullen,AL,Alabama,1107,Pickens,33.1481,-88.1757,16,16.5,shape,FALSE,TRUE,America/Chicago,3,35442,1840027517
-San Antonio,San Antonio,NM,New Mexico,35053,Socorro,33.9161,-106.87,16,7.7,shape,FALSE,FALSE,America/Denver,3,87801 87832,1840025017
 Huntley,Huntley,WY,Wyoming,56015,Goshen,41.9316,-104.1439,16,40.3,shape,FALSE,FALSE,America/Denver,3,82218,1840017460
 Meyer,Meyer,IA,Iowa,19131,Mitchell,43.4618,-92.7011,16,7.1,shape,FALSE,FALSE,America/Chicago,3,50455,1840024038
 Hardy,Hardy,IA,Iowa,19091,Humboldt,42.8102,-94.0512,16,48.9,shape,FALSE,TRUE,America/Chicago,3,50545,1840006908
