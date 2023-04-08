@@ -26,7 +26,7 @@
                     </div>
                 {% endfor %}
                 <br>
-                <button type="button" class="btn btn-primary" onclick="getLocation()">Get GPS</button>
+                <button type="button" class="btn btn-primary" onclick="getLocation()">Submit</button>
             </div>
         </div>
     </div>
@@ -34,7 +34,7 @@
     <script>
         function getLocation() {
             var team = document.querySelector('input[name="team"]:checked').value;
-            window.location.href = '/gps/' + encodeURIComponent(team);
+            window.location.href = '/info/' + encodeURIComponent(team);
         }
     </script>
 </body>
