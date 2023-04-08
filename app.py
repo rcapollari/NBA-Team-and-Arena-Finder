@@ -22,12 +22,27 @@ def index():
     # df_filtered2 = df_filtered[df_filtered['state_name'].isin(nba_states)]
     # Add a column to the filtered DataFrame with the team names
     df_filtered['team_name'] = [nba_team_names[nba_cities.index(city)] if city in nba_cities else '' for city in df_filtered['city']]
+    
+    # Create a separate DataFrame for the Los Angeles Lakers
+    lakers_city = 'Los Angeles'
+    lakers_lat = 34.0522
+    lakers_lng = -118.2437
+    lakers_df = pd.DataFrame({
+        'city': [lakers_city],
+        'lat': [lakers_lat],
+        'lng': [lakers_lng],
+        'state_id': ['CA'],
+        'state_name': ['California'],
+        'team_name': ['Los Angeles Lakers'],
+        'population': 12121244
+    })
+    df_combined = pd.concat([df_filtered, lakers_df], ignore_index=True)
 
-
-    fig = px.scatter_geo(df_filtered, lat='lat', lon='lng', size='population', color='state_name',
+    fig = px.scatter_geo(df_combined, lat='lat', lon='lng', size='population', color='state_name',
                          projection='albers usa', scope='north america', hover_name='team_name')
 
     fig.update_layout(height=800, width=1200)
+    fig.update_traces(hovertemplate='%{hovertext}<extra></extra>')
 
     # Convert the plotly figure to HTML
     plot = fig.to_html(full_html=False)
