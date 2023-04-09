@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Team Info</title>
+    <style>
+        button {
+            background-color: lightgray;
+            color: black;
+            padding: 7px;
+        }
+        p {
+            font-weight: bold;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>{{team}}</h1>
+    <p>Arena: {{team_arena}}</p>
+    <p>Head Coach: {{team_coach}}</p>
+    <p>Year Founded: {{year}}</p>
+    <button><a href="{{ url_for('question', team=team) }}">Go back to home page</a></button>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>NBA Cities Map</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-8">
+                <h1>NBA Cities</h1>
+                <p>Hover over the map to see each NBA team and their location. Choose your team on the side.</p>
+                <div>{{ plot|safe }}</div>
+            </div>
+            <div class="col-md-4">
+                <h2>Choose a Team</h2>
+                {% set sorted_teams = nba_team_names|sort %}
+                {% for team_name in sorted_teams %}
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="team" id="{{ team_name }}" value="{{ team_name }}">
+                        <label class="form-check-label" for="{{ team_name }}">
+                            {{ team_name }}
+                        </label>
+                    </div>
+                {% endfor %}
+                <br>
+                <button type="button" class="btn btn-primary" onclick="getLocation()">Submit</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function getLocation() {
+            var team = document.querySelector('input[name="team"]:checked').value;
+            window.location.href = '/question/' + encodeURIComponent(team);
+        }
+    </script>
+</body>
+</html>

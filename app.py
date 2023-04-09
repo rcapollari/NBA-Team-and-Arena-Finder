@@ -1,8 +1,9 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect, url_for, request
 from nba_api.stats.static import teams
 from nba_api.stats.endpoints import teamdetails
 import plotly.express as px
 import pandas as pd
+import requests
 
 app = Flask(__name__)
 
@@ -41,19 +42,13 @@ def index():
     return render_template('index.html', plot=plot, nba_team_names=nba_team_names)
 
 
-@app.route('/info/<team>')
-def gps(team):
-    # Find the team with the specified full name
-    nba_teams = teams.get_teams()
+@app.route('/info/<team>', methods=['POST', 'GET'])
+def info(team):
     team_info = None
     for t in nba_teams:
         if t['full_name'] == team:
             team_info = t
             break
-
-    # If the team is not found, return an error
-    if team_info is None:
-        return render_template('error.html', message=f'Team "{team}" not found')
 
     team_id = team_info['id']
     team_details = teamdetails.TeamDetails(team_id)
@@ -66,6 +61,45 @@ def gps(team):
     year = team_info[year_founded_index]
     return render_template('info.html', team=team, team_arena=team_arena, team_coach=team_coach, year=year)
 
+@app.route('/question/<team>', methods=['GET'])
+def question(team):
+    team_info = None
+    for t in nba_teams:
+        if t['full_name'] == team:
+            team_info = t
+            break
+
+    team_id = team_info['id']
+    team_details = teamdetails.TeamDetails(team_id)
+    team_info = team_details.team_background.get_dict()['data'][0]
+    arena_index = team_details.team_background.get_dict()['headers'].index('ARENA')
+    team_arena = team_info[arena_index]
+    city = nba_cities[nba_team_names.index(team)]
+    
+    return render_template('question.html', team=team, team_arena=team_arena, city=city)
+
+@app.route('/directions/<team>', methods=['POST'])
+def directions(team):
+    
+    if request.form['directions'] == 'yes':
+        return redirect(url_for('directions_page', team=team))
+    else:
+        return redirect(url_for('info', team=team))
+    
+@app.route('/directions/<team>/page')
+def directions_page(team):
+    team_info = None
+    for t in nba_teams:
+        if t['full_name'] == team:
+            team_info = t
+            break
+
+    team_id = team_info['id']
+    team_details = teamdetails.TeamDetails(team_id)
+    team_info = team_details.team_background.get_dict()['data'][0]
+    arena_index = team_details.team_background.get_dict()['headers'].index('ARENA')
+    team_arena = team_info[arena_index]
+    return render_template('directions.html', team=team, team_arena=team_arena)
 
 if __name__ == '__main__':
     print('starting Flask app', app.name)
