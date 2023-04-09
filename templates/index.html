@@ -11,7 +11,7 @@
         <div class="row">
             <div class="col-md-8">
                 <h1>NBA Cities</h1>
-                <p>Hover over the NBA cities and select the one you are interested in on the side.</p>
+                <p>Hover over the map to see each NBA team and their location. Choose your team on the side.</p>
                 <div>{{ plot|safe }}</div>
             </div>
             <div class="col-md-4">
@@ -34,7 +34,7 @@
     <script>
         function getLocation() {
             var team = document.querySelector('input[name="team"]:checked').value;
-            window.location.href = '/info/' + encodeURIComponent(team);
+            window.location.href = '/question/' + encodeURIComponent(team);
         }
     </script>
 </body>

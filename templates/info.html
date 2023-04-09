@@ -20,6 +20,6 @@
     <p>Arena: {{team_arena}}</p>
     <p>Head Coach: {{team_coach}}</p>
     <p>Year Founded: {{year}}</p>
-    <button><a href="{{ url_for('index') }}">Go back to home page</a></button>
+    <button><a href="{{ url_for('question', team=team) }}">Go back to home page</a></button>
 </body>
 </html>
