@@ -3,9 +3,13 @@ from nba_api.stats.static import teams
 from nba_api.stats.endpoints import teamdetails
 import plotly.express as px
 import pandas as pd
-import requests
+from flask_caching import Cache
+import os
 
 app = Flask(__name__)
+app.config['CACHE_TYPE'] = 'filesystem'
+app.config['CACHE_DIR'] = '/cache.json'
+cache = Cache(app)
 
 # Data obtained from https://simplemaps.com/data/us-cities
 df = pd.read_csv('uscities.csv')
@@ -29,6 +33,15 @@ lakers_df = pd.DataFrame({
 })
 df_combined = pd.concat([df_filtered, lakers_df], ignore_index=True)
 
+tree = \
+    ("Do you want directions to this team's arena?",
+        ("Do you want to look for tickets?",
+            ("Go to TicketMaster or another ticket site", None, None),
+            ("Directions", None, None)),
+        ("Do you want to see this team's current roster and stats?", None, None,
+            ("Current stats", None, None),
+            ("All time team info", None, None)))
+
 @app.route('/')
 def index():
     fig = px.scatter_geo(df_combined, lat='lat', lon='lng', size='population', color='state_name',
@@ -43,6 +56,7 @@ def index():
 
 
 @app.route('/info/<team>', methods=['POST', 'GET'])
+@cache.cached(timeout=10)
 def info(team):
     team_info = None
     for t in nba_teams:
@@ -62,6 +76,7 @@ def info(team):
     return render_template('info.html', team=team, team_arena=team_arena, team_coach=team_coach, year=year)
 
 @app.route('/question/<team>', methods=['GET'])
+@cache.cached(timeout=10)
 def question(team):
     team_info = None
     for t in nba_teams:
@@ -76,11 +91,11 @@ def question(team):
     team_arena = team_info[arena_index]
     city = nba_cities[nba_team_names.index(team)]
     
-    return render_template('question.html', team=team, team_arena=team_arena, city=city)
+    return render_template('question.html', team=team, team_arena=team_arena, city=city, tree=tree)
 
 @app.route('/directions/<team>', methods=['POST'])
+@cache.cached(timeout=10)
 def directions(team):
-    
     if request.form['directions'] == 'yes':
         return redirect(url_for('directions_page', team=team))
     else:
@@ -104,3 +119,6 @@ def directions_page(team):
 if __name__ == '__main__':
     print('starting Flask app', app.name)
     app.run(debug=True)
+
+app.config['CACHE_DIR'] = os.getcwd() + '/cache.json'
+cache.init_app(app)
