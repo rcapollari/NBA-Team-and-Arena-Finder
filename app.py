@@ -33,38 +33,31 @@ lakers_df = pd.DataFrame({
 })
 df_combined = pd.concat([df_filtered, lakers_df], ignore_index=True)
 
-tree = ("Do you want directions to this team's arena?",
-        ("Do you want to look for tickets?",
-            ("Go to TicketMaster or another ticket site", None, None),
-            ("Directions", None, None)),
-        ("Do you want to see this team's current roster and stats?",
-            ("Do you want to see the current stats?", None, None),
-            ("Do you want to see all time team info?", None, None)))
+# tree = ("Do you want directions to this team's arena?",
+#         ("Do you want to look for tickets?",
+#             ("Go to TicketMaster or another ticket site", None, None),
+#             ("Directions", None, None)),
+#         ("Do you want to see this team's current roster and stats?",
+#             ("Do you want to see the current stats?", None, None),
+#             ("Do you want to see all time team info?", None, None)))
 
-def yes(prompt):
-    guess = input(prompt)
-    if guess.lower() == 'yes' or guess.lower() == 'y' or guess.lower() == 'yup' or guess.lower() == 'sure' or guess.lower() == 'yuh':
-        return True
-    elif guess.lower() == 'no' or guess.lower() == 'nah' or guess.lower() == 'n' or guess.lower() == 'nope':
-        return False
-    
+tree = \
+    ("Do you want directions to this team's arena?",
+     ("Do you want to look for tickets first?", None, None),
+     ("Do you want to see their roster and stats?", None, None))
+
 def traverse(tree):
     question, left, right = tree
     if left is None and right is None: # If leaf
-        ask = yes(f'{question}')
-        if ask is True:
-            print("Woo!")
-            return True
-        elif ask is False:
-            print("Dang")
-            return False
-    else: # If node
-        guess = yes(question + " ")
-        if guess is True:
-            traverse(left)
-        elif guess is False:
-            traverse(right)
-traverse(tree)
+        return question
+    else:
+        answer = request.form.get('answer')
+        if answer == 'yes':
+            return traverse(left)
+        elif answer == 'no':
+            return traverse(right)
+        else:
+            return question
         
 @app.route('/')
 def index():
@@ -99,7 +92,7 @@ def info(team):
     year = team_info[year_founded_index]
     return render_template('info.html', team=team, team_arena=team_arena, team_coach=team_coach, year=year)
 
-@app.route('/question/<team>', methods=['GET'])
+@app.route('/question/<team>', methods=['GET', 'POST'])
 @cache.cached(timeout=10)
 def question(team):
     team_info = None
@@ -114,13 +107,18 @@ def question(team):
     arena_index = team_details.team_background.get_dict()['headers'].index('ARENA')
     team_arena = team_info[arena_index]
     city = nba_cities[nba_team_names.index(team)]
-    
-    return render_template('question.html', team=team, team_arena=team_arena, city=city, tree=tree)
 
-@app.route('/directions/<team>', methods=['POST'])
+    if request.method == 'POST':
+        result = traverse(tree)
+        return render_template('result.html', result=result, team=team, city=city)
+    else:
+        question = traverse(tree)
+    return render_template('question.html', question=question, team=team, team_arena=team_arena, city=city)    
+    
+@app.route('/directions/<team>', methods=['GET','POST'])
 @cache.cached(timeout=10)
 def directions(team):
-    if request.form['directions'] == 'yes':
+    if request.method == 'GET':
         return redirect(url_for('directions_page', team=team))
     else:
         return redirect(url_for('info', team=team))
@@ -139,6 +137,15 @@ def directions_page(team):
     arena_index = team_details.team_background.get_dict()['headers'].index('ARENA')
     team_arena = team_info[arena_index]
     return render_template('directions.html', team=team, team_arena=team_arena)
+
+@app.route('/demo', methods=['GET', 'POST'])
+def demo():
+    if request.method == 'POST':
+        result = traverse(tree)
+        return render_template('result.html', result=result)
+    else:
+        question = traverse(tree)
+        return render_template('demo_index.html', question=question)
 
 if __name__ == '__main__':
     print('starting Flask app', app.name)

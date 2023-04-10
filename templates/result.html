@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Questions</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+    <h1 style="text-align: center;">{{team}}</h1>
+    <h3>{{ result }}</h3>
+    <form id='answer-form'>
+        <input type="radio" name="answer" value="yes"> Yes<br>
+        <input type="radio" name="answer" value="no"> No<br><br>
+        <button  type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    <br><br>
+    <button><a href="{{ url_for('index') }}">Go back to home page</a></button> 
+</body>
+<script>
+  const answerForm = document.getElementById('answer-form');
+  
+  answerForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const answerYes = document.querySelector('input[value="yes"]');
+    let url = '';
+
+    if ("{{ result }}" === "Do you want to look for tickets first?" & answerYes.checked) {
+      url = "https://www.ticketmaster.com/";
+    } else if ("{{ result }}" === "Do you want to look for tickets first?" & !answerYes.checked) {
+        url = "{{ url_for('directions', team=team) }}"
+    } 
+    
+    if ("{{ result }}" === "Do you want to see their roster and stats?" & answerYes.checked) {
+        url = "https://www.ticketmaster.com/"
+    } else if ("{{ result }}" === "Do you want to see their roster and stats?" & !answerYes.checked) {
+        url = "{{ url_for('info', team=team) }}"
+    } 
+
+    if (answerYes.checked) {
+      window.location.href = url;
+    } else{
+        window.location.href = url;
+    }
+  });
+  </script>
+</html>
+
+<!-- If User select no, then navigate to the necessary page. We'll need a way to tell which leaf of the
+    tree we are on so that we know which path to navigate to.
+
+    Maybe an if-statement like if result == "" then go to this link else go to the other link
+
+    Also keep in mind that we still need to keep track of which team we are referring to.
+    Could be easier once we implement this into that specific route in questions.-->
