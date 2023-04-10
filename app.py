@@ -33,15 +33,39 @@ lakers_df = pd.DataFrame({
 })
 df_combined = pd.concat([df_filtered, lakers_df], ignore_index=True)
 
-tree = \
-    ("Do you want directions to this team's arena?",
+tree = ("Do you want directions to this team's arena?",
         ("Do you want to look for tickets?",
             ("Go to TicketMaster or another ticket site", None, None),
             ("Directions", None, None)),
-        ("Do you want to see this team's current roster and stats?", None, None,
-            ("Current stats", None, None),
-            ("All time team info", None, None)))
+        ("Do you want to see this team's current roster and stats?",
+            ("Do you want to see the current stats?", None, None),
+            ("Do you want to see all time team info?", None, None)))
 
+def yes(prompt):
+    guess = input(prompt)
+    if guess.lower() == 'yes' or guess.lower() == 'y' or guess.lower() == 'yup' or guess.lower() == 'sure' or guess.lower() == 'yuh':
+        return True
+    elif guess.lower() == 'no' or guess.lower() == 'nah' or guess.lower() == 'n' or guess.lower() == 'nope':
+        return False
+    
+def traverse(tree):
+    question, left, right = tree
+    if left is None and right is None: # If leaf
+        ask = yes(f'{question}')
+        if ask is True:
+            print("Woo!")
+            return True
+        elif ask is False:
+            print("Dang")
+            return False
+    else: # If node
+        guess = yes(question + " ")
+        if guess is True:
+            traverse(left)
+        elif guess is False:
+            traverse(right)
+traverse(tree)
+        
 @app.route('/')
 def index():
     fig = px.scatter_geo(df_combined, lat='lat', lon='lng', size='population', color='state_name',
