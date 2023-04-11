@@ -5,13 +5,19 @@ import plotly.express as px
 import pandas as pd
 from flask_caching import Cache
 import os
+import geopy
+from geopy.geocoders import Nominatim
+import folium
+from map_secrets import API_KEY
+import requests
+import openrouteservice as ors
 
 app = Flask(__name__)
 app.config['CACHE_TYPE'] = 'filesystem'
 app.config['CACHE_DIR'] = '/cache.json'
 cache = Cache(app)
 
-# Data obtained from https://simplemaps.com/data/us-cities
+# CSV data obtained from https://simplemaps.com/data/us-cities
 df = pd.read_csv('uscities.csv')
 nba_teams = teams.get_teams()
 nba_cities = [team['city'] for team in nba_teams]
@@ -33,14 +39,6 @@ lakers_df = pd.DataFrame({
 })
 df_combined = pd.concat([df_filtered, lakers_df], ignore_index=True)
 
-# tree = ("Do you want directions to this team's arena?",
-#         ("Do you want to look for tickets?",
-#             ("Go to TicketMaster or another ticket site", None, None),
-#             ("Directions", None, None)),
-#         ("Do you want to see this team's current roster and stats?",
-#             ("Do you want to see the current stats?", None, None),
-#             ("Do you want to see all time team info?", None, None)))
-
 tree = \
     ("Do you want directions to this team's arena?",
      ("Do you want to look for tickets first?", None, None),
@@ -58,6 +56,10 @@ def traverse(tree):
             return traverse(right)
         else:
             return question
+
+nom = Nominatim(user_agent="SI 507 Final Project")
+n = nom.geocode("Little Caesars Arena")
+print(n.latitude, n.longitude)
         
 @app.route('/')
 def index():
@@ -136,7 +138,30 @@ def directions_page(team):
     team_info = team_details.team_background.get_dict()['data'][0]
     arena_index = team_details.team_background.get_dict()['headers'].index('ARENA')
     team_arena = team_info[arena_index]
-    return render_template('directions.html', team=team, team_arena=team_arena)
+
+    nom = Nominatim(user_agent="SI 507 Final Project")
+    n = nom.geocode(team_arena)
+    lat = n.latitude
+    lon = n.longitude
+
+    map = folium.Map(location=[lat, lon], zoom_start=13, tiles='OpenStreetMap', width=700, height=500)
+    folium.Marker(location=[lat, lon], tooltip=team_arena).add_to(map)
+    map_html = map._repr_html_()
+
+    # Get the user's current location (latitude, longitude) using geopy
+    user_address = request.form.get('user-address')
+    user_location = nom.geocode("300 State St, Ann Arbor, MI") # user address goes in here
+    user_lat, user_lon = user_location.latitude, user_location.longitude
+    url = f'https://api.openrouteservice.org/v2/directions/driving-car?api_key={API_KEY}&start={user_lon},{user_lat}&end={lon},{lat}'
+    response = requests.get(url)
+
+    # Parse the JSON response and extract the route geometry and instructions
+    data = response.json()
+    print(data)
+    route_geometry = data['features'][0]['geometry']['coordinates']
+    route_instructions = [(step['instruction'], step['distance'], step['duration']) for step in data['features'][0]['properties']['segments'][0]['steps']]
+
+    return render_template('directions.html', team=team, team_arena=team_arena, lat=lat, lon=lon, map_html=map_html, route_instructions=route_instructions)
 
 @app.route('/demo', methods=['GET', 'POST'])
 def demo():

@@ -4,9 +4,19 @@
     <meta charset="utf-8">
     <title>Directions</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    
 </head>
 <body>
     <h2>Directions to {{team_arena}}</h2>
+    <p>Latitude: {{lat}}</p>
+    <p>Longitude: {{lon}}</p>
+    <p>{{route_instructions}}</p>
+    <form method="POST" action="{{ url_for('directions_page', team=team) }}">
+        <label for="user-address">Enter your address:</label>
+        <input type="text" name="user-address" id="user-address">
+        <input type="submit" value="Get directions">
+    </form>
+    {{map_html|safe}}
     <button><a href="{{ url_for('question', team=team) }}">Go back to previous page</a></button>
 </body>
 </html>
