@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{{team}} Roster and Stats</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <style>
+        table {
+          border-collapse: collapse;
+          width: 60%;
+          border: 1px solid black;
+        }
+        th, td {
+          text-align: left;
+          padding: 8px;
+        }
+        th {
+          background-color: #f2f2f2;
+        }
+        td {
+          border-right: 1px solid #ddd;
+        }
+        td:last-child {
+          border-right: none;
+        }
+      </style>
+</head>
+<body>
+    <h2>{{team}} Roster and Stats</h2>
+    <p>{{stats}}</p>
+    <table>
+        <thead>
+          <tr>
+            <th>Player</th>
+            <th>Position</th>
+            <th>Height</th>
+            <th>Weight</th>
+            <th>College/Previous Team</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for player in roster.iterrows() %}
+            <tr>
+              <td>{{ player[1]['PLAYER'] }}</td>
+              <td>{{ player[1]['POSITION'] }}</td>
+              <td>{{ player[1]['HEIGHT'] }}</td>
+              <td>{{ player[1]['WEIGHT'] }}</td>
+              <td>{{ player[1]['SCHOOL'] }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <br>
+      <button><a href="{{ url_for('question', team=team) }}">Go back</a></button>
+</body>
+</html>

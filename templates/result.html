@@ -13,7 +13,7 @@
         <button  type="submit" class="btn btn-primary">Submit</button>
     </form>
     <br><br>
-    <button><a href="{{ url_for('index') }}">Go back to home page</a></button> 
+    <button><a href="{{ url_for('index') }}">Go back</a></button> 
 </body>
 <script>
   const answerForm = document.getElementById('answer-form');
@@ -30,7 +30,7 @@
     } 
     
     if ("{{ result }}" === "Do you want to see their roster and stats?" & answerYes.checked) {
-        url = "https://www.ticketmaster.com/"
+        url = "{{ url_for('currentstats', team=team) }}"
     } else if ("{{ result }}" === "Do you want to see their roster and stats?" & !answerYes.checked) {
         url = "{{ url_for('info', team=team) }}"
     } 

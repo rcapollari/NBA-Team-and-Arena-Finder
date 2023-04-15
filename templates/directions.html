@@ -4,19 +4,54 @@
     <meta charset="utf-8">
     <title>Directions</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    
+    <style>
+        .container {
+        display: flex;
+        flex-direction: row;
+        }
+
+        .map-container {
+        width: 700px;
+        height: 1000px;
+        flex: left;
+        }
+
+        .list-container {
+        flex-grow: 1;
+        padding-left: 45px;
+        width: fit-content;
+        }
+    </style>
 </head>
 <body>
     <h2>Directions to {{team_arena}}</h2>
-    <p>Latitude: {{lat}}</p>
-    <p>Longitude: {{lon}}</p>
-    <p>{{route_instructions}}</p>
+    <p>Put in your address or location to get directions to {{team_arena}}</p>
     <form method="POST" action="{{ url_for('directions_page', team=team) }}">
         <label for="user-address">Enter your address:</label>
         <input type="text" name="user-address" id="user-address">
         <input type="submit" value="Get directions">
     </form>
-    {{map_html|safe}}
-    <button><a href="{{ url_for('question', team=team) }}">Go back to previous page</a></button>
+    <br>
+    <!-- {{map_html|safe}}
+    {% for instruction in route_instructions %}
+        <li>{{ instruction[0] }} ({{ instruction[1] }} meters, {{ instruction[2] }} seconds)</li>
+    {% endfor %} -->
+    <div class="container">
+        <div class="map-container">
+          {{ map_html | safe }}
+          <br>
+          <button><a href="{{ url_for('question', team=team) }}">Go back</a></button>
+
+        </div>
+        <div class="list-container">
+          <h2>Directions:</h2>
+          <ol>
+          {% for instruction in route_instructions %}
+            <li>{{ instruction[0] }} ({{ instruction[1] }} m, {{ instruction[2] }} s)</li>
+          {% endfor %}
+          </ol>
+        </div>
+
+      </div>
 </body>
 </html>

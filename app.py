@@ -1,6 +1,6 @@
 from flask import Flask, render_template, redirect, url_for, request
 from nba_api.stats.static import teams
-from nba_api.stats.endpoints import teamdetails
+from nba_api.stats.endpoints import teamdetails, CommonTeamRoster
 import plotly.express as px
 import pandas as pd
 from flask_caching import Cache
@@ -13,9 +13,7 @@ import requests
 import openrouteservice as ors
 
 app = Flask(__name__)
-app.config['CACHE_TYPE'] = 'filesystem'
-app.config['CACHE_DIR'] = '/cache.json'
-cache = Cache(app)
+cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 
 # CSV data obtained from https://simplemaps.com/data/us-cities
 df = pd.read_csv('uscities.csv')
@@ -56,12 +54,9 @@ def traverse(tree):
             return traverse(right)
         else:
             return question
-
-nom = Nominatim(user_agent="SI 507 Final Project")
-n = nom.geocode("Little Caesars Arena")
-print(n.latitude, n.longitude)
         
 @app.route('/')
+@cache.cached(timeout=2)
 def index():
     fig = px.scatter_geo(df_combined, lat='lat', lon='lng', size='population', color='state_name',
                          projection='albers usa', scope='north america', hover_name='team_name')
@@ -73,9 +68,8 @@ def index():
 
     return render_template('index.html', plot=plot, nba_team_names=nba_team_names)
 
-
 @app.route('/info/<team>', methods=['POST', 'GET'])
-@cache.cached(timeout=10)
+@cache.cached(timeout=2)
 def info(team):
     team_info = None
     for t in nba_teams:
@@ -95,7 +89,7 @@ def info(team):
     return render_template('info.html', team=team, team_arena=team_arena, team_coach=team_coach, year=year)
 
 @app.route('/question/<team>', methods=['GET', 'POST'])
-@cache.cached(timeout=10)
+@cache.cached(timeout=2)
 def question(team):
     team_info = None
     for t in nba_teams:
@@ -118,14 +112,15 @@ def question(team):
     return render_template('question.html', question=question, team=team, team_arena=team_arena, city=city)    
     
 @app.route('/directions/<team>', methods=['GET','POST'])
-@cache.cached(timeout=10)
+@cache.cached(timeout=2)
 def directions(team):
     if request.method == 'GET':
         return redirect(url_for('directions_page', team=team))
     else:
         return redirect(url_for('info', team=team))
     
-@app.route('/directions/<team>/page')
+@app.route('/directions/<team>/page', methods=['GET','POST'])
+@cache.cached(timeout=2)
 def directions_page(team):
     team_info = None
     for t in nba_teams:
@@ -144,16 +139,13 @@ def directions_page(team):
     lat = n.latitude
     lon = n.longitude
 
-    map = folium.Map(location=[lat, lon], zoom_start=13, tiles='OpenStreetMap', width=700, height=500)
-    folium.Marker(location=[lat, lon], tooltip=team_arena).add_to(map)
-    map_html = map._repr_html_()
-
     # Get the user's current location (latitude, longitude) using geopy
     user_address = request.form.get('user-address')
-    user_location = nom.geocode("300 State St, Ann Arbor, MI") # user address goes in here
+    user_location = nom.geocode(user_address) # user address goes in here
     user_lat, user_lon = user_location.latitude, user_location.longitude
     url = f'https://api.openrouteservice.org/v2/directions/driving-car?api_key={API_KEY}&start={user_lon},{user_lat}&end={lon},{lat}'
     response = requests.get(url)
+    print(url)
 
     # Parse the JSON response and extract the route geometry and instructions
     data = response.json()
@@ -161,16 +153,28 @@ def directions_page(team):
     route_geometry = data['features'][0]['geometry']['coordinates']
     route_instructions = [(step['instruction'], step['distance'], step['duration']) for step in data['features'][0]['properties']['segments'][0]['steps']]
 
+    map = folium.Map(location=[lat, lon], zoom_start=7, tiles='OpenStreetMap') # Height and Width of map can be listed here
+    folium.Marker(location=[lat, lon], tooltip=team_arena, icon=folium.Icon(color='red')).add_to(map)
+    folium.Marker(location=[user_lat, user_lon], tooltip='Your Location', icon=folium.Icon(color='green')).add_to(map)
+    map_html = map._repr_html_()
+
     return render_template('directions.html', team=team, team_arena=team_arena, lat=lat, lon=lon, map_html=map_html, route_instructions=route_instructions)
 
-@app.route('/demo', methods=['GET', 'POST'])
-def demo():
-    if request.method == 'POST':
-        result = traverse(tree)
-        return render_template('result.html', result=result)
-    else:
-        question = traverse(tree)
-        return render_template('demo_index.html', question=question)
+@app.route('/<team>/currentstats', methods=['GET', 'POST'])
+@cache.cached(timeout=2)
+def currentstats(team):
+    team_info = None
+    for t in nba_teams:
+        if t['full_name'] == team:
+            team_info = t
+            break
+    team_id = team_info['id']
+    team_details = teamdetails.TeamDetails(team_id)
+    team_info = team_details.team_background.get_dict()['data'][0]
+    
+    roster = CommonTeamRoster(team_id=team_id).get_data_frames()[0]
+    roster = roster[['PLAYER', 'POSITION', 'HEIGHT', 'WEIGHT', 'SCHOOL']]
+    return render_template('currentstats.html', team=team, roster=roster)
 
 if __name__ == '__main__':
     print('starting Flask app', app.name)
