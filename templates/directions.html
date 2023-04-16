@@ -22,6 +22,14 @@
         width: fit-content;
         }
     </style>
+<script>
+  window.onload = function() {
+      if (!sessionStorage.getItem('alertShown')) {
+          alert("Your IP address may be used to determine the default starting location.");
+          sessionStorage.setItem('alertShown', true);
+      }
+  };
+</script>
 </head>
 <body>
     <h2>Directions to {{team_arena}}</h2>
@@ -44,7 +52,7 @@
 
         </div>
         <div class="list-container">
-          <h2>Directions:</h2>
+          <h3>Directions:</h3>
           <ol>
           {% for instruction in route_instructions %}
             <li>{{ instruction[0] }} ({{ instruction[1] }} m, {{ instruction[2] }} s)</li>

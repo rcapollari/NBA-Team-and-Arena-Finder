@@ -11,6 +11,7 @@ import folium
 from map_secrets import API_KEY
 import requests
 import openrouteservice as ors
+import geocoder
 
 app = Flask(__name__)
 cache = Cache(app, config={'CACHE_TYPE': 'simple'})
@@ -139,10 +140,19 @@ def directions_page(team):
     lat = n.latitude
     lon = n.longitude
 
-    # Get the user's current location (latitude, longitude) using geopy
-    user_address = request.form.get('user-address')
-    user_location = nom.geocode(user_address) # user address goes in here
-    user_lat, user_lon = user_location.latitude, user_location.longitude
+    g = geocoder.ip('me')
+    
+    user_lat, user_lon = None, None
+    if request.method == 'POST':
+        user_address = request.form.get('user-address')
+        user_location = nom.geocode(user_address)
+        if user_location is not None:
+            user_lat, user_lon = user_location.latitude, user_location.longitude
+        else:
+            user_lat, user_lon = g.latlng
+    else:
+        user_lat, user_lon = g.latlng
+
     url = f'https://api.openrouteservice.org/v2/directions/driving-car?api_key={API_KEY}&start={user_lon},{user_lat}&end={lon},{lat}'
     response = requests.get(url)
     print(url)
@@ -151,11 +161,15 @@ def directions_page(team):
     data = response.json()
     print(data)
     route_geometry = data['features'][0]['geometry']['coordinates']
+    print(route_geometry)
+    route_coords = [[coord[1], coord[0]] for coord in route_geometry]
     route_instructions = [(step['instruction'], step['distance'], step['duration']) for step in data['features'][0]['properties']['segments'][0]['steps']]
 
     map = folium.Map(location=[lat, lon], zoom_start=7, tiles='OpenStreetMap') # Height and Width of map can be listed here
     folium.Marker(location=[lat, lon], tooltip=team_arena, icon=folium.Icon(color='red')).add_to(map)
     folium.Marker(location=[user_lat, user_lon], tooltip='Your Location', icon=folium.Icon(color='green')).add_to(map)
+    folium.PolyLine(locations=route_coords, color='blue').add_to(map)
+
     map_html = map._repr_html_()
 
     return render_template('directions.html', team=team, team_arena=team_arena, lat=lat, lon=lon, map_html=map_html, route_instructions=route_instructions)
@@ -175,6 +189,11 @@ def currentstats(team):
     roster = CommonTeamRoster(team_id=team_id).get_data_frames()[0]
     roster = roster[['PLAYER', 'POSITION', 'HEIGHT', 'WEIGHT', 'SCHOOL']]
     return render_template('currentstats.html', team=team, roster=roster)
+
+@app.route('/<team>/tickets', methods=['GET', 'POST'])
+@cache.cached(timeout=2)
+def tickets(team):
+    return render_template('tickets.html', team=team)
 
 if __name__ == '__main__':
     print('starting Flask app', app.name)

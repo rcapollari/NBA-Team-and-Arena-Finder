@@ -24,7 +24,7 @@
     let url = '';
 
     if ("{{ result }}" === "Do you want to look for tickets first?" & answerYes.checked) {
-      url = "https://www.ticketmaster.com/";
+      url = "{{ url_for('tickets', team=team) }}";
     } else if ("{{ result }}" === "Do you want to look for tickets first?" & !answerYes.checked) {
         url = "{{ url_for('directions', team=team) }}"
     } 

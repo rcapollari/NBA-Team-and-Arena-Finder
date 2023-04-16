@@ -6,7 +6,6 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <style>
         button {
-            background-color: lightgray;
             color: black;
             padding: 7px;
         }
@@ -21,6 +20,6 @@
     <p>Arena: {{team_arena}}</p>
     <p>Head Coach: {{team_coach}}</p>
     <p>Year Founded: {{year}}</p>
-    <button><a href="{{ url_for('question', team=team) }}">Go back to home page</a></button>
+    <button><a href="{{ url_for('question', team=team) }}">Go back</a></button>
 </body>
 </html>
