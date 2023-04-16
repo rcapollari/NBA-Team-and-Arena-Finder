@@ -167,7 +167,7 @@ def directions_page(team):
 
     map = folium.Map(location=[lat, lon], zoom_start=7, tiles='OpenStreetMap') # Height and Width of map can be listed here
     folium.Marker(location=[lat, lon], tooltip=team_arena, icon=folium.Icon(color='red')).add_to(map)
-    folium.Marker(location=[user_lat, user_lon], tooltip='Your Location', icon=folium.Icon(color='green')).add_to(map)
+    folium.Marker(location=[user_lat, user_lon], tooltip='Starting Location', icon=folium.Icon(color='green')).add_to(map)
     folium.PolyLine(locations=route_coords, color='blue').add_to(map)
 
     map_html = map._repr_html_()

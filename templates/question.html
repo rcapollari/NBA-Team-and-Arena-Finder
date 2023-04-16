@@ -4,27 +4,25 @@
     <meta charset="utf-8">
     <title>Question 1</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <style>
+        form {
+            text-align: center;
+            border: 5px black solid;
+            font-size: 20px;
+        }
+    </style>
 </head>
 <body>
     <h1 style="text-align: center;">{{team}}</h1>
-    <h2>{{team_arena}} in {{city}}</h2>
-    <!-- <h2>Do you want directions to {{team_arena}} in {{city}}?</h2>
-    <form action="{{ url_for('directions', team=team) }}" method="POST">
-        <input type="radio" id="yes" name="directions" value="yes">
-        <label for="yes">Yes</label><br>
-        <input type="radio" id="no" name="directions" value="no">
-        <label for="no">No</label><br>
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
-    <br>
-    <button><a href="{{ url_for('index') }}">Go back to previous page</a></button> -->
-
+    
     <form method="post">
+        <h2>{{team_arena}} in {{city}}</h2>
         <h3>{{ question }}</h3>
         <input type="radio" id="yes" name="answer" value="yes"> Yes<br>
         <input type="radio" id="no" name="answer" value="no"> No<br>
         <br>
         <button type="submit" class="btn btn-primary">Submit</button>
+        <br><br>
       </form>
       <br>
       <button><a href="{{ url_for('index') }}">Go back</a></button> 

@@ -3,14 +3,23 @@
 <head>
     <title>Questions</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-</head>
+    <style>
+      form {
+          text-align: center;
+          border: 5px black solid;
+          font-size: 20px;
+      }
+  </style>
+  </head>
 <body>
     <h1 style="text-align: center;">{{team}}</h1>
-    <h3>{{ result }}</h3>
+    
     <form id='answer-form'>
+      <h3>{{ result }}</h3>
         <input type="radio" name="answer" value="yes"> Yes<br>
         <input type="radio" name="answer" value="no"> No<br><br>
         <button  type="submit" class="btn btn-primary">Submit</button>
+        <br><br>
     </form>
     <br><br>
     <button><a href="{{ url_for('index') }}">Go back</a></button> 

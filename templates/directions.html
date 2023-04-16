@@ -8,18 +8,22 @@
         .container {
         display: flex;
         flex-direction: row;
+        width: 100%;
         }
 
         .map-container {
-        width: 700px;
-        height: 1000px;
-        flex: left;
+        width: 83% !important;
+        height: 100% !important;
+        /* flex: left; */
         }
 
         .list-container {
         flex-grow: 1;
-        padding-left: 45px;
-        width: fit-content;
+        padding-left: 30px;
+        width: 55%;
+        }
+        body {
+          margin: 4px
         }
     </style>
 <script>
@@ -45,17 +49,17 @@
         <li>{{ instruction[0] }} ({{ instruction[1] }} meters, {{ instruction[2] }} seconds)</li>
     {% endfor %} -->
     <div class="container">
-        <div class="map-container">
+        <div class="map-container" >
           {{ map_html | safe }}
           <br>
           <button><a href="{{ url_for('question', team=team) }}">Go back</a></button>
 
         </div>
         <div class="list-container">
-          <h3>Directions:</h3>
+          <h3>Driving Directions:</h3>
           <ol>
           {% for instruction in route_instructions %}
-            <li>{{ instruction[0] }} ({{ instruction[1] }} m, {{ instruction[2] }} s)</li>
+            <li>{{ instruction[0] }} ({{ instruction[1] }} m, {{ instruction[2] }} s) </li>
           {% endfor %}
           </ol>
         </div>
