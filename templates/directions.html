@@ -37,17 +37,13 @@
 </head>
 <body>
     <h2>Directions to {{team_arena}}</h2>
-    <p>Put in your address or location to get directions to {{team_arena}}</p>
+    <p>Put in your starting address or location to get directions to {{team_arena}}</p>
     <form method="POST" action="{{ url_for('directions_page', team=team) }}">
-        <label for="user-address">Enter your address:</label>
+        <label for="user-address">Enter your starting address:</label>
         <input type="text" name="user-address" id="user-address">
         <input type="submit" value="Get directions">
     </form>
     <br>
-    <!-- {{map_html|safe}}
-    {% for instruction in route_instructions %}
-        <li>{{ instruction[0] }} ({{ instruction[1] }} meters, {{ instruction[2] }} seconds)</li>
-    {% endfor %} -->
     <div class="container">
         <div class="map-container" >
           {{ map_html | safe }}
@@ -57,11 +53,14 @@
         </div>
         <div class="list-container">
           <h3>Driving Directions:</h3>
+          <h5><b>Total distance:</b> {{ '%.2f'|format(total_distance/1609) }} miles</h5>
+          <h5><b>Total time:</b> {{ '%.2f'|format(total_time/60) }} min</h5>
           <ol>
           {% for instruction in route_instructions %}
-            <li>{{ instruction[0] }} ({{ instruction[1] }} m, {{ instruction[2] }} s) </li>
+            <li>{{ instruction[0] }} ({{ '%.2f'|format(instruction[1]/1609) }} mi, {{ '%.2f'|format(instruction[2]/60)  }} min) </li>
           {% endfor %}
           </ol>
+
         </div>
 
       </div>

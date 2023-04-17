@@ -20,6 +20,41 @@
     <p>Arena: {{team_arena}}</p>
     <p>Head Coach: {{team_coach}}</p>
     <p>Year Founded: {{year}}</p>
+    <h3>{{team}} Upcoming Schedule</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Matchup</th>
+                <th>TV</th>
+                <th>Location</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for game in team_games %}
+            <tr>
+                <td>{{ game[0][:10] }}</td>
+                <td>{{ game[4] }}</td>
+                <td>
+                    {% for team in nba_teams %}
+                    {% if game[7] == team['id'] %}
+                    {{ team['full_name'] }}
+                    {% endif %}
+                    {% endfor %}
+                    vs
+                    {% for team in nba_teams %}
+                    {% if game[6] == team['id'] %}
+                    {{ team['full_name'] }}
+                    {% endif %}
+                    {% endfor %}
+                  </td>
+                <td>{{ game[11] }}</td>
+                <td>{{ game[15] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
     <button><a href="{{ url_for('question', team=team) }}">Go back</a></button>
 </body>
 </html>

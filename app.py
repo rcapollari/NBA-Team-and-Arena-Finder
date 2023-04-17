@@ -1,17 +1,16 @@
 from flask import Flask, render_template, redirect, url_for, request
 from nba_api.stats.static import teams
-from nba_api.stats.endpoints import teamdetails, CommonTeamRoster
+from nba_api.stats.endpoints import teamdetails, CommonTeamRoster, scoreboardv2
 import plotly.express as px
 import pandas as pd
 from flask_caching import Cache
 import os
-import geopy
 from geopy.geocoders import Nominatim
 import folium
 from map_secrets import API_KEY
 import requests
-import openrouteservice as ors
 import geocoder
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
 cache = Cache(app, config={'CACHE_TYPE': 'simple'})
@@ -79,6 +78,7 @@ def info(team):
             break
 
     team_id = team_info['id']
+    print(team_id)
     team_details = teamdetails.TeamDetails(team_id)
     team_info = team_details.team_background.get_dict()['data'][0]
     arena_index = team_details.team_background.get_dict()['headers'].index('ARENA')
@@ -87,7 +87,26 @@ def info(team):
     team_arena = team_info[arena_index]
     team_coach = team_info[coach_index]
     year = team_info[year_founded_index]
-    return render_template('info.html', team=team, team_arena=team_arena, team_coach=team_coach, year=year)
+
+    today = datetime.today()
+    start_date = datetime.today()
+    games = []
+    # Today's Score Board
+    scoreboard = scoreboardv2.ScoreboardV2(game_date=today.strftime('%m/%d/%Y'))
+    games += scoreboard.game_header.get_dict()['data']
+
+    for i in range(1, 7):
+        game_date = start_date + timedelta(days=i)
+        scoreboard = scoreboardv2.ScoreboardV2(game_date=game_date.strftime('%m/%d/%Y'))
+        games += scoreboard.game_header.get_dict()['data']
+        print(scoreboard.game_header.get_dict())
+
+    team_games = []
+    for game in games:
+        if game[7] == team_id or game[6] == team_id:
+            team_games.append(game)
+    
+    return render_template('info.html', team=team, team_arena=team_arena, team_coach=team_coach, year=year, games=games, team_id=team_id, nba_teams=nba_teams, team_games=team_games)
 
 @app.route('/question/<team>', methods=['GET', 'POST'])
 @cache.cached(timeout=2)
@@ -155,15 +174,19 @@ def directions_page(team):
 
     url = f'https://api.openrouteservice.org/v2/directions/driving-car?api_key={API_KEY}&start={user_lon},{user_lat}&end={lon},{lat}'
     response = requests.get(url)
-    print(url)
 
     # Parse the JSON response and extract the route geometry and instructions
     data = response.json()
-    print(data)
     route_geometry = data['features'][0]['geometry']['coordinates']
-    print(route_geometry)
     route_coords = [[coord[1], coord[0]] for coord in route_geometry]
     route_instructions = [(step['instruction'], step['distance'], step['duration']) for step in data['features'][0]['properties']['segments'][0]['steps']]
+
+    total_distance = 0.0
+    total_time = 0.0
+
+    for instruction in route_instructions:
+        total_distance += instruction[1]
+        total_time += instruction[2]
 
     map = folium.Map(location=[lat, lon], zoom_start=7, tiles='OpenStreetMap') # Height and Width of map can be listed here
     folium.Marker(location=[lat, lon], tooltip=team_arena, icon=folium.Icon(color='red')).add_to(map)
@@ -172,7 +195,7 @@ def directions_page(team):
 
     map_html = map._repr_html_()
 
-    return render_template('directions.html', team=team, team_arena=team_arena, lat=lat, lon=lon, map_html=map_html, route_instructions=route_instructions)
+    return render_template('directions.html', team=team, team_arena=team_arena, lat=lat, lon=lon, map_html=map_html, route_instructions=route_instructions, total_distance=total_distance, total_time=total_time)
 
 @app.route('/<team>/currentstats', methods=['GET', 'POST'])
 @cache.cached(timeout=2)
