@@ -99,7 +99,6 @@ def info(team):
         game_date = start_date + timedelta(days=i)
         scoreboard = scoreboardv2.ScoreboardV2(game_date=game_date.strftime('%m/%d/%Y'))
         games += scoreboard.game_header.get_dict()['data']
-        print(scoreboard.game_header.get_dict())
 
     team_games = []
     for game in games:
