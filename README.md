@@ -11,17 +11,17 @@ in the terminal and go to http://localhost:5000/.
 You will also need to create an account at https://openrouteservice.org/ and obtain an API key which will be used for the URL to create the map with directions to each NBA arena. When this API key is obtained, create a file called map_secrets.py, create a variable called API_KEY, and assign it to your key.
 
 ### Python Packages
-•	nba_api
-•	plotly
-•	flask
-•	flask_caching
-•	os
-•	geopy
-•	folium
-•	requests
-•	pandas
-•	geocoder
-•	datetime
+* nba_api
+* plotly
+* flask
+* flask_caching
+* os
+* geopy
+* folium
+* requests
+* pandas
+* geocoder
+* datetime
 
 ## Data Sources
 The following are the data sources I used for this project:
