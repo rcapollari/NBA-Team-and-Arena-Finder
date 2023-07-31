@@ -1,4 +1,4 @@
-# SI-507-Final-Project
+# NBA-Team-and-Arena-Finder
 
 ## Introduction
 This is an application that displays data on each team in the National Basketball Association (NBA). You will find roster information, as well as the upcoming game schedule for every team. In addition, you will find information on the arenas where each team plays and driving directions to those locations.
